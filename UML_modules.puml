@@ -1,0 +1,59 @@
+@startuml
+title   HealthCalculator
+
+
+skinparam class {
+BackgroundColor White
+ArrowColor Black
+BorderColor Black
+}
+skinparam object {
+BackgroundColor White
+ArrowColor Black
+BorderColor Black
+}
+scale 1.3
+skinparam DefaultTextAlignment left
+skinparam shadowing false
+skinparam packageStyle frame
+hide circle
+'hide members
+'skinparam monochrome true
+'note " lots in deal" as spread
+'package Storage {
+class Heart{
+age
+gender
+pulse
+calc()
+}
+class Resp{
+age
+time
+calc()
+}
+class IMT{
+weight
+height
+calc()
+}
+class Platform{
+input
+output
+harington()
+diagram()
+}
+class Site{
+input()
+output()
+}
+Platform -l- Heart
+Platform - IMT
+Platform -u- Site
+Platform --  Resp
+'Mean_deal --|> Deal
+@enduml
+
+
+
+
