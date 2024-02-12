@@ -25,22 +25,26 @@ class Heart{
 age
 gender
 pulse
+level
 calc()
 }
 class Resp{
 age
 time
+level
 calc()
 }
 class IMT{
 weight
 height
+level
 calc()
 }
 class Platform{
 input
 output
-harington()
+level
+harrington()
 diagram()
 }
 class Site{
