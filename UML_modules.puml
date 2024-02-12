@@ -40,7 +40,7 @@ height
 level
 calc()
 }
-class Platform{
+class Controller{
 input
 output
 level
@@ -51,10 +51,10 @@ class Site{
 input()
 output()
 }
-Platform -l- Heart
-Platform - IMT
-Platform -u- Site
-Platform --  Resp
+Controller -l- Heart
+Controller - IMT
+Controller -u- Site
+Controller --  Resp
 'Mean_deal --|> Deal
 @enduml
 
