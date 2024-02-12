@@ -25,25 +25,25 @@ class Heart{
 age
 gender
 pulse
-level
+h_level
 calc()
 }
 class Resp{
 age
 time
-level
+h_level
 calc()
 }
 class IMT{
 weight
 height
-level
+h_level
 calc()
 }
 class Controller{
-input
-output
-level
+'input
+'output
+h_level
 harrington()
 diagram()
 }

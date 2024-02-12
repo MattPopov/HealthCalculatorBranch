@@ -21,8 +21,10 @@ class Site:
     def input(self):
         ...
 
-    def output(self):
-        ...
+    @staticmethod
+    def output(value):
+        plt.show()
+        print(f'Сердце - {value}')
 
 
 class Controller:
@@ -35,7 +37,7 @@ class Controller:
         self.resp = Resp(self)  # ресурсы легких
 
     @staticmethod
-    def show_diagram():
+    def create_diagram():
         """Показываем диаграмму"""
         params = ['imt', 'heart', 'resp']
         results = [0.5, 0.8, 0.9, ]
@@ -55,17 +57,7 @@ class Controller:
         pl = ax.yaxis.get_gridlines()
         for line in pl:
             line.get_path()._interpolation_steps = 5
-        plt.show()
-
-
-class Heart:
-    """Управление объектами """
-
-    def __init__(self, contr: Controller = None):
-        self.controller = contr  # Ссылка на родителя
-
-    def calc(self):
-        print(self)
+        # plt.show()
 
 
 class IMT:
@@ -82,7 +74,17 @@ class Resp:
         self.controller = contr  # Ссылка на родителя
 
 
+class Heart:
+    """Управление объектами """
+
+    def __init__(self, _controller: Controller = None):
+        self.controller = _controller  # Ссылка на родителя
+
+    def calc(self):
+        self.controller.create_diagram()
+        self.controller.site.output('хорошо')
+
+
 if __name__ == '__main__':
     site = Site()  # Создаем объект
-    site.controller.show_diagram()
     site.controller.heart.calc()
