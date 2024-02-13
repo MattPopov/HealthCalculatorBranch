@@ -16,7 +16,7 @@ class Site:
     """Вводи и вывод данных пользователем """
 
     def __init__(self):
-        self.controller: Controller = Controller(self)  # ресурсы легких
+        self.controller: Health = Health(self)  # ресурсы легких
 
     def input(self):
         ...
@@ -27,7 +27,7 @@ class Site:
         print(f'Сердце - {value}')
 
 
-class Controller:
+class Health:
     """Управление объектами """
 
     def __init__(self, _site: Site = None):
@@ -63,21 +63,21 @@ class Controller:
 class IMT:
     """Управление объектами """
 
-    def __init__(self, _controller: Controller = None):
-        self.controller = _controller  # Ссылка на родителя
+    def __init__(self, _health: Health = None):
+        self.health = _health  # Ссылка на родителя
 
 
 class Resp:
     """Управление объектами """
 
-    def __init__(self, contr: Controller = None):
+    def __init__(self, contr: Health = None):
         self.controller = contr  # Ссылка на родителя
 
 
 class Heart:
     """Управление объектами """
 
-    def __init__(self, _controller: Controller = None):
+    def __init__(self, _controller: Health = None):
         self.controller = _controller  # Ссылка на родителя
 
     def calc(self):
