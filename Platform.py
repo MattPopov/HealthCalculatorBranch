@@ -16,7 +16,7 @@ class Site:
     """Вводи и вывод данных пользователем """
 
     def __init__(self):
-        self.controller: Health = Health(self)  # ресурсы легких
+        self.health: Health = Health(self)  # ресурсы легких
 
     def input(self):
         ...
@@ -70,6 +70,7 @@ class Harrington:
 
     @staticmethod
     def calc(bad: float, good: float):
+        print(bad, good)
         return bad, good
 
 
@@ -90,14 +91,15 @@ class Resp:
 class Heart:
     """Управление объектами """
 
-    def __init__(self, _controller: Health = None):
-        self.controller = _controller  # Ссылка на родителя
+    def __init__(self, _healt: Health = None):
+        self.health = _healt  # Ссылка на родителя
 
     def calc(self):
-        self.controller.create_diagram()
-        self.controller.site.output('хорошо')
+        self.health.create_diagram()
+        self.health.site.output('хорошо')
 
 
 if __name__ == '__main__':
     site = Site()  # Создаем объект
-    site.controller.heart.calc()
+    site.health.heart.calc()
+    site.health.harrington.calc(320, 430)
