@@ -12,7 +12,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-class Site:
+class User:
     """Вводи и вывод данных пользователем """
 
     def __init__(self):
@@ -30,8 +30,8 @@ class Site:
 class Health:
     """Управление объектами """
 
-    def __init__(self, _site: Site = None):
-        self.site = _site  # Ссылка на родителя
+    def __init__(self, _user: User = None):
+        self.user = _user  # Ссылка на родителя
         self.heart = Heart(self)  # ресурсы сердечно-сосудистой системы
         self.imt = IMT(self)  # индекс массы тела
         self.resp = Resp(self)  # ресурсы легких
@@ -96,10 +96,10 @@ class Heart:
 
     def calc(self):
         self.health.create_diagram()
-        self.health.site.output('хорошо')
+        self.health.user.output('хорошо')
 
 
 if __name__ == '__main__':
-    site = Site()  # Создаем объект
-    site.health.heart.calc()
-    site.health.harrington.calc(320, 430)
+    user = User()  # Создаем объект
+    user.health.heart.calc()
+    user.health.harrington.calc(320, 430)
