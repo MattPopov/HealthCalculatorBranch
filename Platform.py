@@ -91,8 +91,8 @@ class Resp:
 class Heart:
     """Управление объектами """
 
-    def __init__(self, _healt: Health = None):
-        self.health = _healt  # Ссылка на родителя
+    def __init__(self, _health: Health = None):
+        self.health = _health  # Ссылка на родителя
 
     def calc(self):
         self.health.create_diagram()
