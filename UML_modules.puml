@@ -40,21 +40,20 @@ height
 h_level
 calc()
 }
-class Controller{
-'input
-'output
+class Health{
 h_level
-harrington()
+harrington
+
 diagram()
 }
 class Site{
 input()
 output()
 }
-Controller -l- Heart
-Controller - IMT
-Controller -u- Site
-Controller --  Resp
+Health -l- Heart
+Health - IMT
+Health -u- Site
+Health --  Resp
 'Mean_deal --|> Deal
 @enduml
 

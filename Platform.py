@@ -35,6 +35,7 @@ class Health:
         self.heart = Heart(self)  # ресурсы сердечно-сосудистой системы
         self.imt = IMT(self)  # индекс массы тела
         self.resp = Resp(self)  # ресурсы легких
+        self.harrington = Harrington(self)  # перевод параметра в безразмерную величину
 
     @staticmethod
     def create_diagram():
@@ -58,6 +59,18 @@ class Health:
         for line in pl:
             line.get_path()._interpolation_steps = 5
         # plt.show()
+
+
+class Harrington:
+    """Управление объектами """
+
+    def __init__(self, _health: Health = None):
+        self.h_bad = 0.20  # С
+        self.h_good = 0.63  # С
+
+    @staticmethod
+    def calc(bad: float, good: float):
+        return bad, good
 
 
 class IMT:
