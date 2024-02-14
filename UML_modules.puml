@@ -46,13 +46,13 @@ harrington
 
 diagram()
 }
-class Site{
+class User{
 input()
 output()
 }
 Health -l- Heart
 Health - IMT
-Health -u- Site
+Health -u- User
 Health --  Resp
 'Mean_deal --|> Deal
 @enduml
