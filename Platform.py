@@ -10,6 +10,7 @@ UML схема модуля
 
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 
 
 class User:
@@ -93,13 +94,23 @@ class Heart:
 
     def __init__(self, _health: Health = None):
         self.health = _health  # Ссылка на родителя
+        self.bad_pulse = None
+        self.good_pulse = None
 
-    def calc(self):
-        self.health.create_diagram()
-        self.health.user.output('хорошо')
+    def pulse(self, gender: str = 'women', age: int = 25):
+        xls_file = pd.ExcelFile(r'heart.xlsx')  # Экспорт excel файла
+        df = xls_file.parse('Лист1')  # Создание DataFrame
+        self.good_pulse = int(df.loc[(df['gender'] == gender) & (df['age'] >= age)]['good_pulse'].iloc[0])
+        self.bad_pulse = int(df.loc[(df['gender'] == gender) & (df['age'] >= age)]['bad_pulse'].iloc[0])
+        print(df)
+        print(f'good_pulse = {self.good_pulse}')
+        print(f'bad_pulse = {self.bad_pulse}')
+
+        # self.health.create_diagram()
+        # self.health.user.output('хорошо')
 
 
 if __name__ == '__main__':
     user_1 = User()  # Создаем объект
-    user_1.health.heart.calc()
-    user_1.health.harrington.calc(320, 430)
+    user_1.health.heart.pulse()
+    # user_1.health.harrington.calc(320, 430)
