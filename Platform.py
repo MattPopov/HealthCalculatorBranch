@@ -101,6 +101,7 @@ class Heart:
         xls_file = pd.ExcelFile(r'heart.xlsx')  # Экспорт excel файла
         df = xls_file.parse('Лист1')  # Создание DataFrame
         self.good_pulse = int(df.loc[(df['gender'] == gender) & (df['age'] >= age)]['good_pulse'].iloc[0])
+        # Фильтруем по полу, возрасту и выводим первый [0] элемент серии значений как целое число
         self.bad_pulse = int(df.loc[(df['gender'] == gender) & (df['age'] >= age)]['bad_pulse'].iloc[0])
         print(df)
         print(f'good_pulse = {self.good_pulse}')
