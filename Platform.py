@@ -100,6 +100,6 @@ class Heart:
 
 
 if __name__ == '__main__':
-    user = User()  # Создаем объект
-    user.health.heart.calc()
-    user.health.harrington.calc(320, 430)
+    user_1 = User()  # Создаем объект
+    user_1.health.heart.calc()
+    user_1.health.harrington.calc(320, 430)
