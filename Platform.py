@@ -7,6 +7,7 @@ UML схема модуля
 Сценарий работы модуля:
 Тест модуля находится в папке model/tests.
 """
+import math
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -41,25 +42,36 @@ class Health:
     @staticmethod
     def create_diagram():
         """Показываем диаграмму"""
-        params = ['imt', 'heart', 'resp']
-        results = [0.5, 0.8, 0.9, ]
+        params = ['ИМТ', 'Сердце', 'Легкие']
+        results = [50, 80, 90]
 
         theta = np.linspace(start=0, stop=2 * np.pi, num=len(results), endpoint=False)
         theta = np.concatenate((theta, [theta[0]]))
         results = np.append(results, results[0])
 
-        fig = plt.figure(figsize=(5, 5), facecolor='#f3f3f3')
-        ax = fig.add_subplot(111, projection='polar')
+        fig = plt.figure(figsize=(10, 5), facecolor='#f3f3f3')
+        ax = fig.add_subplot(121, projection='polar')
         ax.plot(theta, results, linewidth=2, color="red")
         ax.set_thetagrids(range(0, 360, int(360 / len(params))), params)
-        plt.yticks(np.arange(0, 1.1, 0.1), fontsize=8)
+        # plt.yticks(np.arange(0, 1.1, 0.1), fontsize=8)
+        plt.yticks(np.arange(0, 110, 10), fontsize=8)
         ax.set(facecolor='#f3f3f3')
         ax.set_theta_offset(np.pi / 2)
 
         pl = ax.yaxis.get_gridlines()
         for line in pl:
             line.get_path()._interpolation_steps = 5
-        # plt.show()
+
+        frame_2 = plt.subplot(1, 2, 2)
+        frame_2.axes.get_xaxis().set_visible(False)
+        frame_2.axes.get_yaxis().set_visible(False)
+        health = int(round(math.prod(results)**(1/len(results)), 0))  # Обобщенный показатель Харрингтона
+        header = f"Всего здоровье {health}%\n"
+        p = params
+        r = results
+        text_block = f'{header}   {p[0]} {r[0]}%\n   {p[1]} {r[1]}%\n   {p[2]} {r[2]}%'
+        plt.text(0.2, 0.5, text_block, fontsize=15)
+        plt.show()
 
 
 class Harrington:
@@ -114,4 +126,5 @@ class Heart:
 if __name__ == '__main__':
     user_1 = User()  # Создаем объект
     user_1.health.heart.pulse()
+    user_1.health.create_diagram()
     # user_1.health.harrington.calc(320, 430)
