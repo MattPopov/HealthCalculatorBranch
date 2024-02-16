@@ -48,33 +48,37 @@ class Health:
         theta = np.linspace(start=0, stop=2 * np.pi, num=len(results), endpoint=False)
         theta = np.concatenate((theta, [theta[0]]))
         results = np.append(results, results[0])
-
-        fig = plt.figure(figsize=(10, 5), facecolor='#f3f3f3')
+        fig, (a0, a1) = plt.subplots(1, 2, gridspec_kw={'width_ratios': [2, 1]},
+                                   figsize=(10, 5), facecolor='#f3f3f3')
+        a0.axes.get_xaxis().set_visible(False)  # Убираем надписи на осях
+        a0.axes.get_yaxis().set_visible(False)
+        a1.axes.get_xaxis().set_visible(False)
+        a1.axes.get_yaxis().set_visible(False)
         ax = fig.add_subplot(121, projection='polar')
         ax.plot(theta, results, linewidth=2, color="red")
         ax.set_thetagrids(range(0, 360, int(360 / len(params))), params)
-        # plt.yticks(np.arange(0, 1.1, 0.1), fontsize=8)
-        plt.yticks(np.arange(0, 110, 10), fontsize=8)
+        plt.yticks(np.arange(0, 110, 10), fontsize=10)
         ax.set(facecolor='#f3f3f3')
         ax.set_theta_offset(np.pi / 2)
-
         pl = ax.yaxis.get_gridlines()
         for line in pl:
             line.get_path()._interpolation_steps = 5
 
-        frame_2 = plt.subplot(1, 2, 2)
-        frame_2.axes.get_xaxis().set_visible(False)
-        frame_2.axes.get_yaxis().set_visible(False)
-        health = int(round(math.prod(results)**(1/len(results)), 0))  # Обобщенный показатель Харрингтона
-        header = f"Всего здоровье {health}%\n"  # Заголовок -  обобщенный показатель Харрингтона
-        p = params
-        r = results
-        parameters = ''  # Показатели здоровья
-        for i in range(len(r)-1):
-            parameters += f'    {i+1}.  {p[i]} {r[i]}%\n'
-        text_block = f'{header}{parameters}'
-        plt.text(0.2, 0.5, text_block, fontsize=15)
+        text_block = Health.text_block(params, results)
+
+        plt.subplot(1, 2, 2)
+        plt.text(0.05, 0.5, text_block, fontsize=14)  # Выводим сводный показатель и отдельные показатели
         plt.show()
+
+    @staticmethod
+    def text_block(params, results):
+        health = int(round(math.prod(results) ** (1 / len(results)), 0))  # Обобщенный показатель Харрингтона
+        header = f"Всего здоровье {health}%\n"  # Заголовок - обобщенный показатель Харрингтона
+        parameters = ''  # Показатели здоровья
+        for i in range(len(results) - 1):
+            parameters += f'    {i + 1}.  {params[i]} {results[i]}%\n'  # Собираем все показатели в строку
+        text_block = f'{header}{parameters}'
+        return text_block
 
 
 class Harrington:
