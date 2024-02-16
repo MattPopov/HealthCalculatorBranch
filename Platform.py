@@ -39,17 +39,18 @@ class Health:
         self.resp = Resp(self)  # ресурсы легких
         self.harrington = Harrington(self)  # перевод параметра в безразмерную величину
 
+    # @staticmethod
     @staticmethod
-    def create_diagram():
+    def create_diagram(par: list, res: list):
         """Показываем диаграмму"""
-        params = ['ИМТ', 'Сердце', 'Легкие']
-        results = [50, 80, 90]
+        params = par
+        results = res
 
         theta = np.linspace(start=0, stop=2 * np.pi, num=len(results), endpoint=False)
         theta = np.concatenate((theta, [theta[0]]))
         results = np.append(results, results[0])
         fig, (a0, a1) = plt.subplots(1, 2, gridspec_kw={'width_ratios': [2, 1]},
-                                   figsize=(10, 5), facecolor='#f3f3f3')
+                                     figsize=(10, 5), facecolor='#f3f3f3')
         a0.axes.get_xaxis().set_visible(False)  # Убираем надписи на осях
         a0.axes.get_yaxis().set_visible(False)
         a1.axes.get_xaxis().set_visible(False)
@@ -71,12 +72,12 @@ class Health:
         plt.show()
 
     @staticmethod
-    def text_block(params, results):
-        health = int(round(math.prod(results) ** (1 / len(results)), 0))  # Обобщенный показатель Харрингтона
+    def text_block(par, res):
+        health = int(round(math.prod(res) ** (1 / len(res)), 0))  # Обобщенный показатель Харрингтона
         header = f"Всего здоровье {health}%\n"  # Заголовок - обобщенный показатель Харрингтона
         parameters = ''  # Показатели здоровья
-        for i in range(len(results) - 1):
-            parameters += f'    {i + 1}.  {params[i]} {results[i]}%\n'  # Собираем все показатели в строку
+        for i in range(len(res) - 1):
+            parameters += f'    {i + 1}.  {par[i]} {res[i]}%\n'  # Собираем все показатели в строку
         text_block = f'{header}{parameters}'
         return text_block
 
@@ -132,6 +133,8 @@ class Heart:
 
 if __name__ == '__main__':
     user_1 = User()  # Создаем объект
-    user_1.health.heart.pulse()
-    user_1.health.create_diagram()
+    # user_1.health.heart.pulse()
+    user_1.health.create_diagram(['ИМТ', 'Сердце', 'Легкие'], [50, 80, 95])
+    user_2 = User()  # Создаем объект
+    user_2.health.create_diagram(['ИМТ', 'Сердце', 'Легкие'], [60, 70, 80])
     # user_1.health.harrington.calc(320, 430)
