@@ -66,10 +66,13 @@ class Health:
         frame_2.axes.get_xaxis().set_visible(False)
         frame_2.axes.get_yaxis().set_visible(False)
         health = int(round(math.prod(results)**(1/len(results)), 0))  # Обобщенный показатель Харрингтона
-        header = f"Всего здоровье {health}%\n"
+        header = f"Всего здоровье {health}%\n"  # Заголовок -  обобщенный показатель Харрингтона
         p = params
         r = results
-        text_block = f'{header}   {p[0]} {r[0]}%\n   {p[1]} {r[1]}%\n   {p[2]} {r[2]}%'
+        parameters = ''  # Показатели здоровья
+        for i in range(len(r)-1):
+            parameters += f'    {i+1}.  {p[i]} {r[i]}%\n'
+        text_block = f'{header}{parameters}'
         plt.text(0.2, 0.5, text_block, fontsize=15)
         plt.show()
 
