@@ -150,11 +150,12 @@ class Heart:
 
 if __name__ == '__main__':
     user_1 = User()  # Создаем объект Пользователь
-    print(user_1.health.heart.df)
-    user_1.health.heart.pulse('women', 26, 79)
+    # print(user_1.health.heart.df)
+    # user_1.health.heart.pulse('women', 26, 79)
     user_2 = User()  # Создаем объект Пользователь
-    user_2.health.heart.pulse('man', 36, 50)
-    print('Показатели Харрингтона и диаграмма здоровья')
+    # user_2.health.heart.pulse('man', 36, 50)
+
+    print('Показатели Харрингтона и диаграмма здоровья отрисованы')
     user_1.health.create_diagram(['ИМТ', 'Сердце', 'Легкие'], [50, 80, 95])
     user_2.health.create_diagram(['ИМТ', 'Сердце', 'Легкие'], [60, 70, 80])
 
