@@ -124,22 +124,25 @@ class Resp:
 
 
 class Heart:
-    """Управление объектами """
+    """Загрузка данных и расчет показателя пульса по Харрингтону """
 
     def __init__(self, _health: Health = None):
         self.health = _health  # Ссылка на родителя
-        self.bad_pulse = None
-        self.good_pulse = None
-
-    def pulse(self, gender: str = 'women', age: int = 26):
+        self.good_pulse = None  # Хороший пульс
+        self.bad_pulse = None  # Плохой пульс
+        self.current_pulse = None  # Текущий пульс
+        self.d_pulse = None  # Показатель Харрингтона
         xls_file = pd.ExcelFile(r'heart.xlsx')  # Импорт excel файла
-        df = xls_file.parse('Лист1')  # Создание DataFrame
-        print(df)
+        self.df = xls_file.parse('Лист1')  # Создание DataFrame
+
+    def pulse(self, gender: str = 'women', age: int = 26, pulse: int = 66):
+        df = self.df
         self.good_pulse = int(df.loc[(df['gender'] == gender) & (df['age'] >= age)]['good_pulse'].iloc[0])
         # Фильтруем по полу, возрасту и выводим первый [0] элемент серии значений как целое число
         self.bad_pulse = int(df.loc[(df['gender'] == gender) & (df['age'] >= age)]['bad_pulse'].iloc[0])
-        print(f'good_pulse = {self.good_pulse}')
-        print(f'bad_pulse = {self.bad_pulse}')
+        self.current_pulse = pulse
+        self.d_pulse = self.health.harrington.calc(self.good_pulse, self.bad_pulse, self.current_pulse)
+        print(f'gender\t{gender},\tage\t{age},\tpulse\t{pulse},\td_pulse\t{int(self.d_pulse * 100)}%')
 
         # self.health.create_diagram()
         # self.health.user.output('хорошо')
@@ -147,23 +150,27 @@ class Heart:
 
 if __name__ == '__main__':
     user_1 = User()  # Создаем объект Пользователь
+    print(user_1.health.heart.df)
+    user_1.health.heart.pulse('women', 26, 79)
     user_2 = User()  # Создаем объект Пользователь
+    user_2.health.heart.pulse('man', 36, 50)
+    print('Показатели Харрингтона и диаграмма здоровья')
     user_1.health.create_diagram(['ИМТ', 'Сердце', 'Легкие'], [50, 80, 95])
     user_2.health.create_diagram(['ИМТ', 'Сердце', 'Легкие'], [60, 70, 80])
 
-    print('user_1')
-    print('y = 430, d = ', round(user_1.health.harrington.calc(430, 320, 430), 3))
-    print('y = 320, d = ', round(user_1.health.harrington.calc(430, 320, 320), 3))
-    print('y = 520, d = ', round(user_1.health.harrington.calc(430, 320, 520), 3))
-    print('y = 270, d = ', round(user_1.health.harrington.calc(430, 320, 270), 3))
-
-    print('user_2')
-    print('y = 200, d = ', round(user_2.health.harrington.calc(200, 100, 200), 3))
-    print('y = 100, d = ', round(user_2.health.harrington.calc(200, 100, 100), 3))
-    print('y = 300, d = ', round(user_2.health.harrington.calc(200, 100, 300), 3))
-    print('y = 70, d = ', round(user_2.health.harrington.calc(200, 100, 70), 3))
-    print('y = 1000, d = ', round(user_2.health.harrington.calc(200, 100, 1000), 3))
-    print('y = 10, d = ', round(user_2.health.harrington.calc(200, 100, 0), 3))
+    # print('user_1')
+    # print('y = 430, d = ', round(user_1.health.harrington.calc(430, 320, 430), 3))
+    # print('y = 320, d = ', round(user_1.health.harrington.calc(430, 320, 320), 3))
+    # print('y = 520, d = ', round(user_1.health.harrington.calc(430, 320, 520), 3))
+    # print('y = 270, d = ', round(user_1.health.harrington.calc(430, 320, 270), 3))
+    #
+    # print('user_2')
+    # print('y = 200, d = ', round(user_2.health.harrington.calc(200, 100, 200), 3))
+    # print('y = 100, d = ', round(user_2.health.harrington.calc(200, 100, 100), 3))
+    # print('y = 300, d = ', round(user_2.health.harrington.calc(200, 100, 300), 3))
+    # print('y = 70, d = ', round(user_2.health.harrington.calc(200, 100, 70), 3))
+    # print('y = 1000, d = ', round(user_2.health.harrington.calc(200, 100, 1000), 3))
+    # print('y = 10, d = ', round(user_2.health.harrington.calc(200, 100, 0), 3))
 
     # print('b_1 = ', round(user_1.health.harrington.b_1, 4))
     # print('b_0 = ', round(user_.health.harrington.b_0, 4))
