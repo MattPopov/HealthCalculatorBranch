@@ -86,13 +86,27 @@ class Harrington:
     """Управление объектами """
 
     def __init__(self, _health: Health = None):
-        self.h_bad = 0.20  # С
-        self.h_good = 0.63  # С
+        """Ахназарова С.Л., Кафаров В.В.; Методы оптимизации эксперимента в химической технологии;1985, с.209"""
+        # self.h_good = 0.755 # Хороший результат по Харрингтону b_0 + b_1 * y_good = h_good (Уравнение 1)
+        self.h_good = -math.log(math.log(1 / 0.63))  # Хороший результат по Харрингтону b_0 + b_1*y_good = h_good (1)
+        # self.h_bad = -0.326 # Плохой результат по Харрингтону b_0 + b_1 * y_bad = h_bad (Уравнение 2)
+        self.h_bad = -math.log(math.log(1 / 0.20))  # Плохой результат по Харрингтону b_0 + b_1 * y_bad = h_bad (2)
+        self.b_0: float = 0  # Первый коэффициент в уравнении Харрингтона
+        self.b_1: float = 0  # Второй коэффициент в уравнении Харрингтона
+        self.d: float = 0  # Частная функция желательности Харрингтона для параметра y
+        self.health = _health  # Ссылка на родителя
 
-    @staticmethod
-    def calc(bad: float, good: float):
-        print(bad, good)
-        return bad, good
+    def calc(self, y_good: float, y_bad: float, y: float):
+        """ Ахназарова с. 207   d = exp [—ехр(— у')]  у’ = bo + b1 * у' """
+        self.b_1 = (self.h_good - self.h_bad) / (y_good - y_bad)  # Считаем b_1 из уравнений (1) и (2)
+        self.b_0 = self.h_good - self.b_1 * y_good  # Считаем b_0 из уравнений (1) и (2)
+        self.d = math.exp(-math.exp(-(self.b_0 + self.b_1 * y)))  # Считаем d по Ахназаровой с.207
+        # print('h_good ', self.h_good)
+        # print('h_bad ', self.h_bad)
+        # print('b_1 ', self.b_1)
+        # print('b_0', self.b_0)
+        # print('d', self.d)
+        return self.d
 
 
 class IMT:
@@ -132,9 +146,28 @@ class Heart:
 
 
 if __name__ == '__main__':
-    user_1 = User()  # Создаем объект
-    # user_1.health.heart.pulse()
+    user_1 = User()  # Создаем объект Пользователь
+    user_2 = User()  # Создаем объект Пользователь
     user_1.health.create_diagram(['ИМТ', 'Сердце', 'Легкие'], [50, 80, 95])
-    user_2 = User()  # Создаем объект
     user_2.health.create_diagram(['ИМТ', 'Сердце', 'Легкие'], [60, 70, 80])
-    # user_1.health.harrington.calc(320, 430)
+
+    print('user_1')
+    print('y = 430, d = ', round(user_1.health.harrington.calc(430, 320, 430), 3))
+    print('y = 320, d = ', round(user_1.health.harrington.calc(430, 320, 320), 3))
+    print('y = 520, d = ', round(user_1.health.harrington.calc(430, 320, 520), 3))
+    print('y = 270, d = ', round(user_1.health.harrington.calc(430, 320, 270), 3))
+
+    print('user_2')
+    print('y = 200, d = ', round(user_2.health.harrington.calc(200, 100, 200), 3))
+    print('y = 100, d = ', round(user_2.health.harrington.calc(200, 100, 100), 3))
+    print('y = 300, d = ', round(user_2.health.harrington.calc(200, 100, 300), 3))
+    print('y = 70, d = ', round(user_2.health.harrington.calc(200, 100, 70), 3))
+    print('y = 1000, d = ', round(user_2.health.harrington.calc(200, 100, 1000), 3))
+    print('y = 10, d = ', round(user_2.health.harrington.calc(200, 100, 0), 3))
+
+    # print('b_1 = ', round(user_1.health.harrington.b_1, 4))
+    # print('b_0 = ', round(user_.health.harrington.b_0, 4))
+    # print('ln (ln 1/0.63) = ', round(-math.log(math.log(1 / 0.63)), 3))
+    # print('ln (ln 1/0.20) = ', round(-math.log(math.log(1 / 0.20)), 3))
+    # print('ln (e) = ', math.log(math.e))
+    # print(round(1/math.e, 3))
