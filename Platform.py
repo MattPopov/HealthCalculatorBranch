@@ -95,6 +95,14 @@ class Harrington:
         self.b_1: float = 0  # Второй коэффициент в уравнении Харрингтона
         self.d: float = 0  # Частная функция желательности Харрингтона для параметра y
         self.health = _health  # Ссылка на родителя
+        self.y_max = 25
+        self.y_min = 18.5
+        self.current_IMT = None
+        self.param = 20.5
+        self.d_param = 0.75
+        self.y1 = None
+        self.y = None
+        self.n = None
 
     def calc(self, y_good: float, y_bad: float, y: float):
         """ Ахназарова с. 207   d = exp [—ехр(— у')]  у’ = bo + b1 * у' """
@@ -108,19 +116,52 @@ class Harrington:
         # print('d', self.d)
         return self.d
 
+    def calc2(self, x: float):
+        self.y1 = (2 * self.param - (self.y_max + self.y_min)) / (self.y_max - self.y_min)
+        self.n = (math.log(math.log(1 / self.d_param))) / (math.log(math.fabs(self.y1)))
+        self.y = (2 * x - (self.y_max + self.y_min)) / (self.y_max - self.y_min)
+        self.d = math.exp(-(math.fabs(self.y) ** self.n))
+        return self.d
+
 
 class IMT:
     """Управление объектами """
 
     def __init__(self, _health: Health = None):
         self.health = _health  # Ссылка на родителя
+        self.current_height = None
+        self.current_weight = None
+        self.current_IMT = None
+        self.d_IMT = None
+
+    def imt(self, height: float, weight: float):
+        self.current_height = height
+        self.current_weight = weight
+        self.current_IMT = round(self.current_weight/(self.current_height ** 2), 2)
+        self.d_IMT = round(self.health.harrington.calc2(self.current_IMT) * 100)
+        return self.d_IMT
 
 
 class Resp:
     """Управление объектами """
 
-    def __init__(self, contr: Health = None):
-        self.controller = contr  # Ссылка на родителя
+    def __init__(self, _health: Health = None):
+        self.health = _health
+        self.good_time = None
+        self.bad_time = None
+        self.current_time = None
+        self.d_time = None
+        xls_file = pd.ExcelFile(r'resp.xlsx')
+        self.df = xls_file.parse('Лист1')
+
+    def time(self, gender, time):
+        df = self.df
+        self.good_time = int(df.loc[(df['gender'] == gender)]['good_time'].iloc[0])
+        self.bad_time = int(df.loc[(df['gender'] == gender)]['bad_time'].iloc[0])
+        self.current_time = time
+        self.d_time = round(self.health.harrington.calc(self.good_time, self.bad_time, self.current_time) * 100)
+        return self.d_time
+        # print(f'gender\t{gender},\ttime\t{time},\td_time\t{self.d_time}%')
 
 
 class Heart:
@@ -135,14 +176,15 @@ class Heart:
         xls_file = pd.ExcelFile(r'heart.xlsx')  # Импорт excel файла
         self.df = xls_file.parse('Лист1')  # Создание DataFrame
 
-    def pulse(self, gender: str = 'women', age: int = 26, pulse: int = 66):
+    def pulse(self, gender, age, pulse):
         df = self.df
         self.good_pulse = int(df.loc[(df['gender'] == gender) & (df['age'] >= age)]['good_pulse'].iloc[0])
         # Фильтруем по полу, возрасту и выводим первый [0] элемент серии значений как целое число
         self.bad_pulse = int(df.loc[(df['gender'] == gender) & (df['age'] >= age)]['bad_pulse'].iloc[0])
         self.current_pulse = pulse
-        self.d_pulse = self.health.harrington.calc(self.good_pulse, self.bad_pulse, self.current_pulse)
-        print(f'gender\t{gender},\tage\t{age},\tpulse\t{pulse},\td_pulse\t{int(self.d_pulse * 100)}%')
+        self.d_pulse = round(self.health.harrington.calc(self.good_pulse, self.bad_pulse, self.current_pulse) * 100)
+        return self.d_pulse
+        # print(f'gender\t{gender},\tage\t{age},\tpulse\t{pulse},\td_pulse\t{self.d_pulse}%')
 
         # self.health.create_diagram()
         # self.health.user.output('хорошо')
@@ -156,8 +198,13 @@ if __name__ == '__main__':
     # user_2.health.heart.pulse('man', 36, 50)
 
     print('Показатели Харрингтона и диаграмма здоровья отрисованы')
-    user_1.health.create_diagram(['ИМТ', 'Сердце', 'Легкие'], [50, 80, 95])
-    user_2.health.create_diagram(['ИМТ', 'Сердце', 'Легкие'], [60, 70, 80])
+    user_1.health.create_diagram(['ИМТ', 'Сердце', 'Легкие'], [user_1.health.imt.imt(1.98, 101),
+                                                               user_1.health.heart.pulse('women', 66, 42),
+                                                               user_1.health.resp.time('women', 59)])
+
+    user_2.health.create_diagram(['ИМТ', 'Сердце', 'Легкие'], [user_2.health.imt.imt(1.98, 101),
+                                                               user_2.health.heart.pulse('man', 25, 70),
+                                                               user_2.health.resp.time('man', 29)])
 
     # print('user_1')
     # print('y = 430, d = ', round(user_1.health.harrington.calc(430, 320, 430), 3))
